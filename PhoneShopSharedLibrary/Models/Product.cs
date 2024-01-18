@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace PhoneShopSharedLibrary.Models
 {
-    public class Products
+    public class Product
     {
         public int Id { get; set; }
         [Required]

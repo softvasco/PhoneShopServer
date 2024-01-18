@@ -12,7 +12,7 @@ using PhoneShopServer.Data;
 namespace PhoneShopServer.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240118173603_First")]
+    [Migration("20240118174334_First")]
     partial class First
     {
         /// <inheritdoc />
@@ -25,7 +25,7 @@ namespace PhoneShopServer.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("PhoneShopSharedLibrary.Models.Products", b =>
+            modelBuilder.Entity("PhoneShopSharedLibrary.Models.Product", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()

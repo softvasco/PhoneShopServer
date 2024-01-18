@@ -22,7 +22,7 @@ namespace PhoneShopServer.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("PhoneShopSharedLibrary.Models.Products", b =>
+            modelBuilder.Entity("PhoneShopSharedLibrary.Models.Product", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
