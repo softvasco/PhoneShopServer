@@ -28,6 +28,14 @@ namespace PhoneShopServer.Repositories
             return new ServiceResponse(flag, message);
         }
 
+        public async Task<List<Product>> GetAllProducts(bool featuredProducts)
+        {
+            if (featuredProducts)
+                return await appDbContext.Products.Where(_ => _.Featured).ToListAsync();
+            else
+                return await appDbContext.Products.ToListAsync();
+        }
+
         private async Task<ServiceResponse> CheckName(string name)
         {
             var product = await appDbContext.Products.FirstOrDefaultAsync(x => x.Name.ToLower()!.Equals(name.ToLower()));
