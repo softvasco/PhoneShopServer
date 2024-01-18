@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PhoneShopSharedLibrary.Models
 {
@@ -20,6 +15,7 @@ namespace PhoneShopSharedLibrary.Models
         [Required, DisplayName("Product Image")]
         public string? Base64Img { get; set; }
         public int Quantity { get; set; }
+        public bool Featured { get; set; }
         public DateTime DateUploaded { get; set; } = DateTime.Now;
     }
 }
