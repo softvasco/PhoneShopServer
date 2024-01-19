@@ -47,6 +47,7 @@
         </div>
     </div>
 </div>
+<MessageDialog @ref="messageDialog"></MessageDialog>
 
 @code
 {
@@ -64,6 +65,15 @@
             SetMessageDialog();
             return;
         }
+
+        var (flag, message) = await ProductService.AddProduct(MyProduct);
+        if (flag)
+            messageDialog!.SetDialogValues("sucess", message);
+        else
+            messageDialog!.SetDialogValues("danger", message);
+
+        SetMessageDialog();
+        return;
     }
 
     async Task UploadImage(InputFileChangeEventArgs e)
@@ -84,6 +94,15 @@
         return;
     }
 
+    MessageDialog? messageDialog;
     public bool ShowBusyButton { get; set; }
     public bool ShowSaveButton { get; set; } = true;
+
+    private async void SetMessageDialog()
+    {
+        await messageDialog!.ShowMessage();
+        ShowBusyButton = false;
+        ShowSaveButton = !ShowBusyButton;
+        StateHasChanged();
+    }
 }
