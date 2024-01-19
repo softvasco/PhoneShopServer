@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using PhoneShopSharedLibrary.Contracts;
 using PhoneShopSharedLibrary.Models;
 using PhoneShopSharedLibrary.Responses;
@@ -8,15 +7,8 @@ namespace PhoneShopServer.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProductController : ControllerBase
+    public class ProductController(IProduct productService) : ControllerBase
     {
-        private readonly IProduct productService;
-
-        public ProductController(IProduct productService)
-        {
-            this.productService = productService;
-        }
-
         [HttpGet]
         public async Task<ActionResult<List<Product>>> GetAllProducts(bool featured)
         {
