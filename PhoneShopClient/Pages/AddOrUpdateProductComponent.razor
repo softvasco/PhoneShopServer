@@ -55,7 +55,15 @@
 
     async Task HandleSaveProduct()
     {
+        ShowSaveButton = false;
+        ShowBusyButton = !ShowSaveButton;
 
+        if(string.IsNullOrEmpty(MyProduct.Base64Img))
+        {
+            messageDialog!.SetDialogValues("warning","You need to choose image");
+            SetMessageDialog();
+            return;
+        }
     }
 
     async Task UploadImage(InputFileChangeEventArgs e)
