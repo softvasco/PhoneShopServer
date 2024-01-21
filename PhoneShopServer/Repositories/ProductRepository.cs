@@ -38,7 +38,7 @@ namespace PhoneShopServer.Repositories
 
         private async Task<ServiceResponse> CheckName(string name)
         {
-            var product = await appDbContext.Products.FirstOrDefaultAsync(x => x.Name.ToLower()!.Equals(name.ToLower()));
+            var product = await appDbContext.Products.FirstOrDefaultAsync(x => x.Name!.ToLower()!.Equals(name.ToLower()));
             return product is null ? new ServiceResponse(true, null!) : new ServiceResponse(false, "Product already exists");
         }
 

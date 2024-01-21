@@ -101,3 +101,41 @@ a, .btn-link {
 code {
     color: #c02d76;
 }
+
+/*Custom Styles*/
+#styleCursor {
+    cursor: pointer;
+}
+
+#styleButton{
+    border-radius:0px;
+}
+
+.control-container{
+    background-color:#ffffff;
+    margin:0 auto;
+}
+
+.e-carousel .slide-content{
+    align-items:center;
+    display:flex;
+    font-size:1.25rem;
+    height:100%;
+    justify-content:center;
+}
+
+.e-carousel .e-carousel-indicators .e-indicator-bars .e-indicator-bar .indicator {
+    background-color: #3e3c41;
+    border-radius: 0.25rem;
+    cursor:pointer;
+    display:flex;
+    height:0.5rem;
+    justify-content:center;
+    margin:0.2rem;
+    width:2rem;
+}
+
+.e-carousel .e-carousel-indicators .e-indicator-bars .e-indicator-bar.e-active .indicator {
+    background-color: #3C78EF;
+    color: #fff;
+}
