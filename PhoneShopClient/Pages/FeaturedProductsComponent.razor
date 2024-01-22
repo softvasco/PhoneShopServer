@@ -14,16 +14,16 @@
                     {
                         <div class="card">
                             <div class="card-body">
-                                @if (item.DateUploaded < DateTime.Now)
+                                @if (item.DateUploaded.AddDays(-30) < DateTime.Now)
                                 {
                                     <span class="badge bg-primary d-flex align-items-end float-end" style="width:50px">New</span>
                                 }
                                 else
                                 {
-                                    <span class="badge bg-primary d-flex align-items-end float-end" style="width:50px">New</span>
+                                    <span class="badge bg-none d-flex align-items-end float-end" style="width:50px; height:20px;"></span>
                                 }
-                                <img class="card-img-top childImage" src="@item.Base64Img" width="150" height="200" style=".." />
-                                <div id="productCover" class="bg-secondary text-white d-flex justify-content-center text-wrap"></div>
+                                <img class="card-img-top childImage" src="@item.Base64Img" width="150" height="200" style="max-width:150px; min-width:150px;" />
+                                <div id="productCover" class="bg-secondary text-white d-flex justify-content-center text-wrap">@item.Name</div>
                             </div>
                         </div>
                     }
@@ -34,18 +34,99 @@
     </div>
 </div>
 
-@code {
+<style>
+    #styleCursor {
+        cursor: pointer;
+    }
 
-    private List<Product> FeaturedProducts { get; set; }
+    #productCover {
+        width: 150px;
+        font-size: 14px;
+        height: 50px;
+        position: absolute;
+        bottom: 10px;
+        border-radius: 10px;
+        padding: 2px;
+        cursor: pointer;
+    }
+
+        #productCover:hover
+        {
+            opacity:1
+        }
+
+    .img
+    {
+        opacity:1;
+        cursor: pointer;
+    }
+
+    .childImage:hover{
+        opacity:0.5;
+    }
+
+</style>
+
+@code {
+    private List<Product>? ProductList = new();
+    protected override async Task OnInitializedAsync()
+    {
+        await RetrieveProdducts();
+    }
+
+    private async Task RetrieveProdducts()
+    {
+        ProductList?.Clear();
+        bool featured = true;
+        var results = await ClientService.GetAllProducts(featured);
+        if (results is null)
+            return;
+
+        foreach (var item in results)
+            ProductList!.Add(item);
+
+        LoadData();
+    }
+
+
+    public int PageSize { get; set; } = 8;
+    public int Skip { get; set; } = 0;
+    public int Take { get; set; } = 8;
+
+    List<Product> FeaturedProducts = new();
+
+    void LoadData()
+    {
+        var getdata = ProductList!.Skip(Skip).Take(Take).ToList();
+        Skip += PageSize;
+        FeaturedProducts?.Clear();
+        foreach (var item in getdata)
+        {
+            FeaturedProducts!.Add(item);
+        }
+    }
 
     void PreviousButton()
     {
-
+        if (Skip == 8) return;
+        var getNextProducts = ProductList!.Skip(Skip - (PageSize * 2)).Take(Take).ToList();
+        Skip -= PageSize;
+        FeaturedProducts?.Clear();
+        foreach (var item in getNextProducts)
+        {
+            FeaturedProducts!.Add(item);
+        }
     }
 
     void NextButton()
     {
-
+        if (Skip > ProductList!.Count()) return;
+        var getNextProducts = ProductList!.Skip(Skip).Take(Take).ToList();
+        Skip += PageSize;
+        FeaturedProducts?.Clear();
+        foreach (var item in getNextProducts)
+        {
+            FeaturedProducts!.Add(item);
+        }
     }
-
 }
