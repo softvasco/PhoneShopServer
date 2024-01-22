@@ -12,8 +12,8 @@ using PhoneShopServer.Data;
 namespace PhoneShopServer.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240118174334_First")]
-    partial class First
+    [Migration("20240122113633_UpdateTable")]
+    partial class UpdateTable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,22 @@ namespace PhoneShopServer.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("PhoneShopSharedLibrary.Models.Category", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Categories");
+                });
 
             modelBuilder.Entity("PhoneShopSharedLibrary.Models.Product", b =>
                 {
@@ -36,6 +52,9 @@ namespace PhoneShopServer.Migrations
                     b.Property<string>("Base64Img")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("DateUploaded")
                         .HasColumnType("datetime2");
@@ -59,7 +78,25 @@ namespace PhoneShopServer.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CategoryId");
+
                     b.ToTable("Products");
+                });
+
+            modelBuilder.Entity("PhoneShopSharedLibrary.Models.Product", b =>
+                {
+                    b.HasOne("PhoneShopSharedLibrary.Models.Category", "Category")
+                        .WithMany("Products")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("PhoneShopSharedLibrary.Models.Category", b =>
+                {
+                    b.Navigation("Products");
                 });
 #pragma warning restore 612, 618
         }

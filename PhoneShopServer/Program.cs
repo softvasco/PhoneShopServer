@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using PhoneShopServer.Data;
 using PhoneShopServer.Repositories;
-using PhoneShopSharedLibrary.Contracts;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +19,7 @@ builder.Services.AddDbContext<AppDbContext>(op =>
 });
 
 builder.Services.AddScoped<IProduct,ProductRepository>();
+builder.Services.AddScoped<ICategory, CategoryRepository>();
 
 //Ending..
 
