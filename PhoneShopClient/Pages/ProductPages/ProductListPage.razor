@@ -1,0 +1,31 @@
+﻿@if (AllProducts is not null)
+{
+    <div class="container-fluid">
+        <div class="row featured__filter">
+            @foreach (var item in AllProducts!.OrderBy(_ => _.Featured))
+            {
+                <div class="col-lg-2 col-md-3 col-sm-6 border-success">
+                    <div class="featured__item" style="width:200px;">
+                        <div class="featured__item__pic set-bg">
+                            <img src="@item.Base64Img" width="150" height="200" />
+                            <ul class="featued__item_pic__hover">
+                                <li><a hred="#"><i class="fa fa-heart"></i></a></li>
+                                <li><a hred="#"><i class="fa fa-retweet"></i></a></li>
+                                <li><a hred="#"><i class="fa fa-shopping-cart text-danger"></i></a></li>
+                            </ul>
+                        </div>
+                        <div class="featured__item__text">
+                            <h6 class="text-primary">@item.Name</h6>
+                            <h6 class="text-danger">@item.Price.ToString("$#.##")</h6>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public List<Product> AllProducts { get; set; } = new();
+}
