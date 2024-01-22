@@ -1,14 +1,15 @@
-﻿@page "/front"
+﻿@implements IDisposable
+
 
 <div class="container">
     <div class="row">
         <div class="col-md-12">
-            @if (FeaturedProductList!.Any())
+            @if (ProductService.FeaturedProducts is not null)
             {
                 <div class="control-container text-dark">
                     <SfCarousel ButtonsVisibility="CarouselButtonVisibility.VisibleOnHover" AnimationEffect="CarouselAnimationEffect.Slide" AutoPlay="true" ShowIndicators="true">
                         <ChildContent>
-                            @foreach (Product product in FeaturedProductList!.OrderByDescending(_ => _.DateUploaded).Take(5)!)
+                            @foreach (Product product in ProductService.FeaturedProducts!.OrderByDescending(_ => _.DateUploaded).Take(5)!)
                             {
                                 <CarouselItem>
                                     <figure class="img-container">
@@ -69,7 +70,9 @@
     List<Product>? FeaturedProductList = new();
     protected override async Task OnInitializedAsync()
     {
-        await RetrieveFeaturedProducts();
+        bool featured = true;
+        await ProductService.GetAllProducts(featured);
+        ProductService.ProductAction += StateHasChanged;
     }
 
     private async Task RetrieveFeaturedProducts()
@@ -93,5 +96,10 @@
         int maxLenth = 100;
         int descriptionLength = description.Length;
         return descriptionLength > maxLenth ? $"{description.Substring(0, 100)}{appendDots}" : description;
+    }
+
+    public void Dispose()
+    {
+        ProductService.ProductAction -= StateHasChanged;
     }
 }

@@ -9,11 +9,12 @@ namespace PhoneShopClient.Services
         private const string ProductBaseUrl = "api/product";
         private const string CategoryBaseUrl = "api/category";
 
-        public Action? CategoryAction { get ; set ; }
+        public Action? CategoryAction { get; set; }
         public List<Category> AllCategories { get; set; }
-        public Action? ProductAtion { get; set; }
+        public Action? ProductAction { get; set; }
         public List<Product> AllProducts { get; set; }
         public List<Product> FeaturedProducts { get; set; }
+        public List<Product> ProductsByCategory { get; set; }
 
 
         // Products
@@ -51,14 +52,14 @@ namespace PhoneShopClient.Services
             if (featuredProducts && FeaturedProducts is null)
             {
                 FeaturedProducts = await GetProducts(featuredProducts);
-                ProductAtion?.Invoke();
+                ProductAction?.Invoke();
                 return;
             }
 
             if (!featuredProducts && AllProducts is null)
             {
                 AllProducts = await GetProducts(featuredProducts);
-                ProductAtion?.Invoke();
+                ProductAction?.Invoke();
                 return;
             }
         }
@@ -73,6 +74,13 @@ namespace PhoneShopClient.Services
             return (List<Product>?)General.DeserializeJsonStringList<Product>(result)!;
         }
 
+        public async Task GetProductsByCategory(int categoryId)
+        {
+            bool featured = false;
+            await GetAllProducts(featured);
+            ProductsByCategory = AllProducts.Where(_ => _.CategoryId == categoryId).ToList();
+            ProductAction?.Invoke();
+        }
 
         //Categories
         public async Task<ServiceResponse> AddCategory(Category model)
@@ -85,7 +93,7 @@ namespace PhoneShopClient.Services
 
             var apiResponse = await ReadContent(response);
             var data = General.DeserializeJsonString<ServiceResponse>(apiResponse);
-            if(!data.Flag)
+            if (!data.Flag)
             {
                 return data;
             }

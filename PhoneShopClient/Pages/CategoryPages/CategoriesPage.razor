@@ -1,0 +1,65 @@
+﻿@implements IDisposable
+
+@if (CategoryService.AllCategories is not null)
+{
+    <div class="card sticky-top" style="font-family:Tahoma; max-height:100%; overflow:scroll">
+        <div class="card-header">Product Categories</div>
+        <div class="card-body">
+            <div class="list-group">
+                <button type="button" @onclick="DefaultCategoryClicked" class="list-group-item list-group-item-action @(CategoryId == 0? "active":"")">
+                    <i class="fa fa-object-group"></i>All
+                </button>
+                @foreach (var item in CategoryService.AllCategories)
+                {
+                    var category = item;
+                    <button type="button" @onclick="()=>CategoryClicked(category.Id)"
+                            class="list-group-item list-grou-item-action mt-3 fw-bold @(category.Id == CategoryId? "active" :"")">
+                        @category.Name!.ToUpper()
+                    </button>
+                }
+            </div>
+        </div>
+    </div>
+}
+
+<style>
+    .card-header {
+        height: 60px;
+        text-align: center;
+        padding: 10px;
+        font-size: 26px;
+        font-family: Impact;
+        color: darkslategray
+    }
+</style>
+
+@code {
+    public int CategoryId { get; set; } = 0;
+    [Parameter]
+    public EventCallback DefaultCategoryClickedEvent { get; set; }
+    [Parameter]
+    public EventCallback<int> CategoryClickedEvent { get; set; }
+
+    protected async override Task OnInitializedAsync()
+    {
+        await CategoryService.GetAllCategories();
+        CategoryService.CategoryAction += StateHasChanged;
+    }
+
+    private async Task CategoryClicked(int categoryId)
+    {
+        CategoryId = categoryId;
+        await CategoryClickedEvent.InvokeAsync(categoryId);
+    }
+
+    async void DefaultCategoryClicked()
+    {
+        CategoryId = 0;
+        await DefaultCategoryClickedEvent.InvokeAsync();
+    }
+
+    public void Dispose()
+    {
+        CategoryService.CategoryAction -= StateHasChanged;
+    }
+}

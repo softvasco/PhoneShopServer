@@ -79,7 +79,7 @@
     {
         bool featured = true;
         await ProductService.GetAllProducts(featured);
-        ProductService.ProductAtion += StateHasChanged;
+        ProductService.ProductAction += StateHasChanged;
         LoadData();
     }
     private async void LoadData()
@@ -118,7 +118,7 @@
 
     public void Dispose()
     {
-        ProductService.ProductAtion -= StateHasChanged;
+        ProductService.ProductAction -= StateHasChanged;
     }
 
   
