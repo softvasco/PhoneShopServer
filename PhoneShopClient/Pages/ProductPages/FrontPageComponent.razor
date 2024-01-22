@@ -1,4 +1,4 @@
-﻿
+﻿@page "/front"
 
 <div class="container">
     <div class="row">
@@ -76,14 +76,8 @@
     {
         FeaturedProductList?.Clear();
         bool feature = true;
-        var results = await ClientService.GetAllProducts(featuredProducts: feature);
-        if (results is null)
-            return;
-
-        foreach (var i in results)
-        {
-            FeaturedProductList!.Add(i);
-        }
+        await ClientService.GetAllProducts(featuredProducts: feature);
+        FeaturedProductList = ClientService.FeaturedProducts;
     }
 
     string GetNewLabel(DateTime dateUploaded)

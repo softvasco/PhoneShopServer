@@ -9,6 +9,13 @@ namespace PhoneShopClient.Services
         private const string ProductBaseUrl = "api/product";
         private const string CategoryBaseUrl = "api/category";
 
+        public Action? CategoryAction { get ; set ; }
+        public List<Category> AllCategories { get; set; }
+        public Action? ProductAtion { get; set; }
+        public List<Product> AllProducts { get; set; }
+        public List<Product> FeaturedProducts { get; set; }
+
+
         // Products
 
         public async Task<ServiceResponse> AddProduct(Product model)
@@ -20,18 +27,47 @@ namespace PhoneShopClient.Services
                 return result;
 
             var apiResponse = await ReadContent(response);
+            await ClearAndGetAllProducts();
             return General.DeserializeJsonString<ServiceResponse>(apiResponse);
         }
 
-        public async Task<List<Product>> GetAllProducts(bool featuredProducts)
+        private async Task ClearAndGetAllProducts()
         {
-            var response = await httpClient.GetAsync($"{ProductBaseUrl}?featured={featuredProducts}");
+            bool featuredProduct = true;
+            bool allProducts = false;
+            AllProducts = null!;
+            FeaturedProducts = null!;
+            await GetAllProducts(featuredProduct);
+            await GetAllProducts(allProducts);
+        }
+
+        public async Task GetAllProducts(bool featuredProducts)
+        {
+            if (featuredProducts && FeaturedProducts is null)
+            {
+                FeaturedProducts = await GetProducts(featuredProducts);
+                ProductAtion?.Invoke();
+                return;
+            }
+
+            if (!featuredProducts && AllProducts is null)
+            {
+                AllProducts = await GetProducts(featuredProducts);
+                ProductAtion?.Invoke();
+                return;
+            }
+        }
+
+        private async Task<List<Product>> GetProducts(bool featured)
+        {
+            var response = await httpClient.GetAsync($"{ProductBaseUrl}?featured={featured}");
             var (flag, _) = CheckResponse(response);
             if (!flag) return null!;
 
             var result = await ReadContent(response);
-            return [.. General.DeserializeJsonStringList<Product>(result)];
+            return (List<Product>?)General.DeserializeJsonStringList<Product>(result)!;
         }
+
 
         //Categories
         public async Task<ServiceResponse> AddCategory(Category model)
@@ -43,17 +79,28 @@ namespace PhoneShopClient.Services
                 return result;
 
             var apiResponse = await ReadContent(response);
+            await ClearAndGetAllCategories();
             return General.DeserializeJsonString<ServiceResponse>(apiResponse);
         }
 
-        public async Task<List<Category>> GetAllCategories()
+        public async Task GetAllCategories()
         {
-            var response = await httpClient.GetAsync($"{CategoryBaseUrl}");
-            var (flag, _) = CheckResponse(response);
-            if (!flag) return null!;
+            if (AllCategories is null)
+            {
+                var response = await httpClient.GetAsync($"{CategoryBaseUrl}");
+                var (flag, _) = CheckResponse(response);
+                if (!flag) return;
 
-            var result = await ReadContent(response);
-            return [.. General.DeserializeJsonStringList<Category>(result)];
+                var result = await ReadContent(response);
+                AllCategories = (List<Category>?)General.DeserializeJsonStringList<Category>(result)!;
+                CategoryAction?.Invoke();
+            }
+        }
+
+        private async Task ClearAndGetAllCategories()
+        {
+            AllCategories = null!;
+            await GetAllCategories();
         }
 
 
@@ -68,6 +115,7 @@ namespace PhoneShopClient.Services
             else
                 return new ServiceResponse(true, null!);
         }
-   
+
+
     }
 }
