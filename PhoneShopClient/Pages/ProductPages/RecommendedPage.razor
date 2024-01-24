@@ -1,0 +1,85 @@
+﻿@implements IDisposable
+
+@if (ProductService.FeaturedProducts is not null)
+{
+    <div class="container-fluid">
+        <div class="row">
+            <div class="card border-success shadow card-container mb-2 mt-2">
+                <SfCarousel ButtonsVisibility="CarouselButtonVisibility.VisibleOnHover" AnimationEffect="CarouselAnimationEffect.Slide" AutoPlay="true">
+                    <ChildContent>
+                        @foreach (var itemDictionary in RecommendCarouselGroupProducts)
+                        {
+                            <CarouselItem>
+                                <figure>
+                                    <div class="row">
+                                        @foreach (var product in itemDictionary.Value)
+                                        {
+                                            <div class="col-lg-2 card-container-display">
+                                                <div class="card border-success shadow">
+                                                    <div class="card-body d-flex justify-content-between">
+                                                        <img src="@product.Base64Img" width="100" height="150" class="d-flex justify-content-center" style="margin-right:5px;"/>
+                                                        <div class="vstack gap-1">
+                                                            <h5>@product.Name</h5>
+                                                            <h6>@(General.GetDescription(product.Description!))</h6>
+                                                            <h6 class="text-danger">@product.Price</h6>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                </figure>
+                            </CarouselItem>
+                        }
+                    </ChildContent>
+                    <PreviousButtonTemplate>
+                        <img src="../resources/lessthan.png" wigth="50" height="50" id="styleCursor" />
+                    </PreviousButtonTemplate>
+                    <NextButtonTemplate>
+                        <img src="../resources/greaterthan.png" wigth="50" height="50" id="styleCursor" />
+                    </NextButtonTemplate>
+
+                    <IndicatorsTemplate>
+                        <div class="indicator"></div>
+                    </IndicatorsTemplate>
+                </SfCarousel>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    List<Product>? FeaturedProducts { get; set; } = new();
+    protected async override Task OnInitializedAsync()
+    {
+        bool featured = true;
+        await ProductService.GetAllProducts(featured);
+        FeaturedProducts = ProductService.FeaturedProducts;
+        ProductService.ProductAction += StateHasChanged;
+        Populate();
+    }
+
+    public void Dispose()
+    {
+        ProductService.ProductAction -= StateHasChanged;
+    }
+
+    Dictionary<int, List<Product>> RecommendCarouselGroupProducts = new();
+    void Populate()
+    {
+        int itemPerView = 2;
+        int totalProducts = ProductService.FeaturedProducts.Count;
+        int numbOfGroups = totalProducts / itemPerView;
+        int startNumber = 1;
+        int skip = 0;
+        if (numbOfGroups <= 0) return;
+        while (startNumber <= numbOfGroups)
+        {
+            var products = ProductService.FeaturedProducts.Skip(skip).Take(itemPerView).ToList();
+            RecommendCarouselGroupProducts.Add(startNumber, products);
+            skip += itemPerView;
+            startNumber++;
+        }
+    }
+}

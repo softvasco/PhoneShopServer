@@ -82,6 +82,19 @@ namespace PhoneShopClient.Services
             ProductAction?.Invoke();
         }
 
+        public Product GetRandomProduct()
+        {
+            if (FeaturedProducts is null)
+                return null!;
+
+            Random RandomNumbers = new();
+
+            int miniumNumber = FeaturedProducts.Min(_ => _.Id);
+            int maximumNumber = FeaturedProducts.Max(_ => _.Id) + 1;
+            int result = RandomNumbers.Next(miniumNumber, maximumNumber);
+            return FeaturedProducts.FirstOrDefault(_ => _.Id == result)!;
+        }
+
         //Categories
         public async Task<ServiceResponse> AddCategory(Category model)
         {
@@ -133,7 +146,6 @@ namespace PhoneShopClient.Services
             else
                 return new ServiceResponse(true, null!);
         }
-
 
     }
 }

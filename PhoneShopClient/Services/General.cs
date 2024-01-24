@@ -19,5 +19,13 @@ namespace PhoneShopClient.Services
                 UnmappedMemberHandling = JsonUnmappedMemberHandling.Skip
             };
         }
+
+        public static string GetDescription(string description)
+        {
+            string appendDots = "...";
+            int maxLenth = 100;
+            int descriptionLength = description.Length;
+            return descriptionLength > maxLenth ? $"{description.Substring(0, 100)}{appendDots}" : description;
+        }
     }
 }

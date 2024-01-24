@@ -1,0 +1,68 @@
+﻿@implements IDisposable
+@if (ProductService.FeaturedProducts is not null)
+{
+    <div class="container-fluid mb-5">
+        <div class="row">
+            <div class="col-li-6">
+                <div class="card border-info">
+                    @{
+                        Product banned1 = ProductService.GetRandomProduct();
+                        Product banned2 = ProductService.GetRandomProduct();
+                    }
+                    <div class="card-header p-3" style="min-height:280px;">
+                        <div class="d-flex justify-content-between">
+                            <div class="text-start">
+                                <h2 style="font-family:Impact">Available On A Cool Price</h2>
+                                <h5 class="text-info">@banned1.Name</h5>
+                                <p class="text-muted fs-6" style="font-family:Tahoma">@(General.GetDescription(banned1.Description!))</p>
+                                <h6 class="text-muted">Free Picked and delivery available</h6>
+                                <h5 class="text-danger">@banned1.Price.ToString("€#.##")</h5>
+                                <button class="btn btn-danger">
+                                    <i class="fa fa-cart-shopping"></i>SHOP NOW
+                                </button>
+                            </div>
+                            <img src="@banned1.Base64Img" width="150" height="200" class="float-end" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-li-6">
+                <div class="card border-primary">
+                    <div class="card-head p-3" style="min-height:280px;">
+                        <div class="d-flex justify-content-between">
+                            <div class="text-start">
+                                <h2 style="font-family:Impact">Secure this <u>Deal</u> Now! </h2>
+                                <h5 class="text-info">@banned2.Name</h5>
+                                <p class="text-muted fs-6" style="font-family:Tahoma">@(General.GetDescription(banned2.Description!))</p>
+                                <h6 class="text-muted">Free Picked and delivery available</h6>
+                                <h5 class="text-danger">@banned2.Price.ToString("€#.##")</h5>
+                                <button class="btn btn-danger">
+                                    <i class="fa fa-cart-shopping"></i>SHOP NOW
+                                </button>
+                            </div>
+                            <img src="@banned2.Base64Img" width="150" height="200" class="float-end" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+}
+
+
+@code
+{
+    protected async override Task OnInitializedAsync()
+    {
+        bool featured = true;
+        await ProductService.GetAllProducts(featured);
+        ProductService.ProductAction += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        ProductService.ProductAction -= StateHasChanged;
+    }
+}

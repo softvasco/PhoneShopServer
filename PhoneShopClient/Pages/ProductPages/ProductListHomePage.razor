@@ -7,7 +7,16 @@
             <CategoriesPage CategoryClickedEvent="CategoryClickedEvent" DefaultCategoryClickedEvent="DefaultCategoryClickedEvent" />
         </div>
         <div class="col-lg-10">
-            <ProductListPage AllProducts="ProductService.AllProducts"/>
+            <BannerPage></BannerPage>
+            <div class="card border-0">
+                <div class="card-header border-success-subtle mb-2"></div>
+                <ProductListPage AllProducts="ProductService.ProductsByCategory??ProductService.AllProducts" />
+            </div>
+        </div>
+        <div class="col-lg-12 mt-5">
+            <div class="card border-0" style="position:absolute;left:1px;right:1px;">
+                <div class="card-header border-danger-subtle">Recommended Products</div>
+            </div>
         </div>
     </div>
 </div>
